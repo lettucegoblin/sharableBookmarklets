@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.15.1/beautify.min.js" integrity="sha512-kElKX79OYM/vf2AU+lF4Zsi3AnKds70Mc6fRBImpwQzdZNbju6SyeTBBOUe1N9q1P456v1F01HAsjjWZkXIS4Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <title>Bookmarklet Generator</title>
+</head>
+<body>
+    <h1>Bookmarklet Generator</h1>
+    <input type="text" id="titleInput" placeholder="Enter bookmarklet title">
+    <textarea id="scriptInput" placeholder="Enter bookmarklet script"></textarea>
+    <p>Drag the following link to your bookmarks bar:</p>
+    <a href="#" id="bookmarkletLink">Drag Me</a>
+
+    <canvas id="canvas" width="32" height="32" style="display: none;"></canvas>
+
+    <script>
+        var canvas = document.getElementById('canvas');
+        var ctx = canvas.getContext('2d');
+        var gradient;
+        var hue = 0;
+
+        function updateFavicon() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+
+            // Create gradient
+            gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
+            gradient.addColorStop(0, `hsl(${hue % 360}, 100%, 50%)`);
+            gradient.addColorStop(1, `hsl(${(hue + 60) % 360}, 100%, 50%)`);
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill the canvas
+
+            // Set favicon
+            var link = document.querySelector('link[rel="icon"]');
+            if (!link) {
+                link = document.createElement('link');
+                link.rel = 'icon';
+                document.head.appendChild(link);
+            }
+            link.href = canvas.toDataURL('image/png');
+
+            hue += 5; // Increment hue for animation
+        }
+
+        setInterval(updateFavicon, 100); // Update favicon every 100ms
+    </script>
+
+    <script src="script.js"></script>
+</body>
+</html>
